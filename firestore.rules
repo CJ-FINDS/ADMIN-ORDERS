@@ -1,0 +1,74 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'chanchan.tumulak@gmail.com';
+    }
+
+    function isVerified() {
+      return request.auth != null
+        && request.auth.token.email_verified == true;
+    }
+
+    match /orders/{orderId} {
+
+      // Only verified customers may create their own orders.
+      allow create: if isVerified()
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'name', 'phone', 'social',
+          'address', 'items', 'total', 'status',
+          'note', 'createdAt', 'orderNo', 'orderSeq'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 30
+        && request.resource.data.social is string
+        && request.resource.data.social.size() <= 200
+        && request.resource.data.address is string
+        && request.resource.data.address.size() <= 500
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 50
+        && request.resource.data.total is number
+        && request.resource.data.status == 'NOT COMPLETED'
+        && request.resource.data.note == ''
+        && request.resource.data.createdAt == request.time
+        // The order number must be the next number from the counter (051026-1, -2, -3 ...)
+        && request.resource.data.orderSeq is int
+        && request.resource.data.orderSeq == getAfter(/databases/$(database)/documents/counters/orders).data.last
+        && request.resource.data.orderNo is string
+        && request.resource.data.orderNo.matches('051026-[0-9]+');
+
+      // Customers can read their own orders (My Orders page and chatbot); admin can read all.
+      allow read: if isAdmin()
+        || (isVerified() && resource.data.uid == request.auth.uid);
+
+      // Only the verified administrator can update or delete orders.
+      allow update, delete: if isAdmin();
+    }
+
+    // Last order number used. A customer can only move it up by exactly 1,
+    // and only together with the order that uses that number.
+    match /counters/orders {
+      allow read: if isVerified();
+      allow create: if isVerified()
+        && request.resource.data.keys().hasOnly(['last'])
+        && request.resource.data.last == 1;
+      allow update: if isVerified()
+        && request.resource.data.keys().hasOnly(['last'])
+        && request.resource.data.last == resource.data.last + 1;
+    }
+
+    // Items that were sold (one record per item). Only the admin can change these.
+    match /soldItems/{itemId} {
+      allow read: if isVerified();
+      allow write: if isAdmin();
+    }
+  }
+}

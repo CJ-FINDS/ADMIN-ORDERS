@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Orders | CJ Finds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-orders.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name">CJ Finds</span>
+      <span class="brand-sub">Orders</span>
+    </div>
+    <div class="who" id="who" hidden>
+      <span id="whoEmail"></span>
+      <button type="button" class="btn btn-quiet" id="signOutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Sign in -->
+    <section class="login" id="loginView" hidden>
+      <h1>Sign in to see orders</h1>
+      <p class="hint">Use the admin account. Only the verified admin email can read orders.</p>
+      <form id="loginForm" novalidate>
+        <label>Email
+          <input type="email" id="loginEmail" autocomplete="username" required />
+        </label>
+        <label>Password
+          <input type="password" id="loginPassword" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button>
+        <p class="msg msg-error" id="loginMsg" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <!-- Not allowed -->
+    <section class="login" id="deniedView" hidden>
+      <h1>This account can't view orders</h1>
+      <p class="hint" id="deniedText"></p>
+      <button type="button" class="btn btn-primary" id="deniedSignOut">Sign out</button>
+    </section>
+
+    <!-- Orders -->
+    <section class="app" id="appView" hidden>
+      <div class="toolbar">
+        <div class="chips" id="chips" role="group" aria-label="Quick date ranges">
+          <button type="button" class="chip" data-range="today">Today</button>
+          <button type="button" class="chip" data-range="yesterday">Yesterday</button>
+          <button type="button" class="chip is-active" data-range="7">Last 7 days</button>
+          <button type="button" class="chip" data-range="month">This month</button>
+          <button type="button" class="chip" data-range="all">All</button>
+        </div>
+
+        <div class="filters">
+          <label>From
+            <input type="date" id="fromDate" />
+          </label>
+          <label>To
+            <input type="date" id="toDate" />
+          </label>
+          <label>Status
+            <select id="statusFilter">
+              <option value="">All</option>
+              <option value="NOT COMPLETED">Not completed</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </label>
+          <label class="grow">Search
+            <input type="search" id="searchBox" placeholder="Order number, name, email or phone" />
+          </label>
+          <label class="grow">Item
+            <input type="search" id="itemBox" placeholder="Item name" />
+          </label>
+          <button type="button" class="btn btn-primary" id="applyBtn">Show orders</button>
+        </div>
+        <p class="tz-note">Dates use Philippine time (UTC+8).</p>
+      </div>
+
+      <div class="summary" id="summary">
+        <div><span class="num" id="sumCount">0</span><span class="lbl">orders</span></div>
+        <div><span class="num" id="sumTotal">₱0</span><span class="lbl">order value</span></div>
+        <div><span class="num" id="sumPending">0</span><span class="lbl">not completed</span></div>
+      </div>
+
+      <p class="msg" id="listMsg" role="status" hidden></p>
+      <div class="orders" id="orders"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="order-chime.js"></script>
+  <script type="module" src="admin-orders.js"></script>
+</body>
+</html>
