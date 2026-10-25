@@ -1,0 +1,177 @@
+:root {
+  --bg: #fff6f7;
+  --surface: #ffffff;
+  --blush: #fde8ec;
+  --blush-deep: #f4b6c2;
+  --rose: #b8405c;
+  --rose-dark: #962f49;
+  --rose-deep: #5d293e;
+  --ink: #3b2a2f;
+  --muted: #7d6a70;
+  --line: #f0d5db;
+  --paper: #fffefe;
+  --font: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Courier Prime", "Courier New", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0 80px;
+}
+
+/* ---------- The receipt machine ---------- */
+.printer {
+  position: relative;
+  z-index: 2;
+  width: min(380px, 92vw);
+  height: 78px;
+  border-radius: 16px 16px 8px 8px;
+  background: linear-gradient(180deg, var(--rose) 0%, var(--rose-dark) 100%);
+  box-shadow: 0 10px 24px rgba(150, 47, 73, .25);
+}
+.printer .led {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blush-deep);
+}
+.printer .slot {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 0;
+  height: 12px;
+  border-radius: 6px 6px 0 0;
+  background: var(--rose-deep);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, .45);
+}
+.printer.is-printing { animation: hum .14s linear infinite; }
+.printer.is-printing .led { animation: blink .6s steps(2, jump-none) infinite; background: #fff; }
+
+@keyframes hum {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(.7px); }
+  75%  { transform: translateX(-.7px); }
+  100% { transform: translateX(0); }
+}
+@keyframes blink {
+  0%   { opacity: 1; }
+  100% { opacity: .25; }
+}
+
+/* ---------- The paper ---------- */
+/* The wrapper clips the paper, so it only shows below the slot */
+.paper-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(380px, 92vw);
+  padding: 0 30px 26px;
+  overflow: hidden;
+  filter: drop-shadow(0 6px 10px rgba(93, 41, 62, .18));
+}
+
+.paper {
+  position: relative;
+  padding: 28px 22px 40px;
+  background: var(--paper);
+  font-family: var(--mono);
+  font-size: .95rem;
+  line-height: 1.45;
+  color: var(--ink);
+  will-change: transform;
+}
+
+.r-head { text-align: center; }
+.r-brand {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--rose);
+}
+.r-meta {
+  margin: 6px 0 0;
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.r-rule {
+  margin: 16px 0;
+  border: 0;
+  border-top: 2px dashed var(--blush-deep);
+}
+
+.r-label {
+  margin: 0 0 10px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-align: center;
+  color: var(--rose-dark);
+}
+
+.r-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.r-items li + li { margin-top: 12px; }
+.r-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+.r-name { min-width: 0; overflow-wrap: anywhere; font-weight: 700; }
+.r-amt { flex: none; white-space: nowrap; }
+.r-sub {
+  margin-top: 1px;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+.r-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.r-confirm { text-align: center; }
+.r-confirm .r-label { margin-bottom: 6px; }
+.r-id {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+
+.msg {
+  margin: 28px 20px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .printer.is-printing,
+  .printer.is-printing .led { animation: none; }
+}
