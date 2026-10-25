@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Print Receipt | CJ Finds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="print-receipt.css" />
+</head>
+<body>
+  <div class="center">
+    <form id="form" novalidate>
+      <input
+        type="text"
+        id="orderId"
+        placeholder="Enter order ID"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Order ID"
+      />
+      <button type="submit" class="btn btn-primary" id="printBtn">Print Receipt</button>
+    </form>
+
+    <!-- Only appears after you act -->
+    <div class="below">
+      <p class="msg" id="msg" role="status" hidden></p>
+      <div class="result" id="result" hidden>
+        <input type="text" id="linkBox" readonly aria-label="Receipt link" />
+        <button type="button" class="btn btn-quiet" id="copyBtn">Copy link</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="print-receipt.js"></script>
+</body>
+</html>
